@@ -41,9 +41,11 @@ type RecurrenceMap = Record<string, { type: RecurrenceType; days: number[] }>;
 // Removed locally defined useLocalStorageState to use shared version from ../hooks
 
 export default function GoalVault() {
-  const { goals, addGoal, completeGoal, deleteGoal, language } = useSYNK();
+  const { goals, addGoal, completeGoal, deleteGoal, language, missions, addMemory } = useSYNK();
   const { activeConfig } = useFandom();
   const t = translations[language as Language] || translations.en;
+  
+  const activeMission = missions.find(m => m.status === 'ACTIVE');
   const [priorityById, setPriorityById] = useLocalStorageState<Record<string, Priority>>("synkify.priorityById", {});
   const [proofById, setProofById] = useLocalStorageState<Record<string, Proof>>("synkify.proofById", {});
   const [scheduleById, setScheduleById] = useLocalStorageState<ScheduleMap>("synkify.scheduleById", {});
@@ -125,8 +127,25 @@ export default function GoalVault() {
 
   const requestCompleteGoal = (id: string) => setProofTargetId(id);
 
-  const completeWithProof = (id: string, proof?: Proof) => {
-    if (proof) setProofById((prev) => ({ ...prev, [id]: proof }));
+  const completeWithProof = async (id: string, proof?: Proof) => {
+    if (proof) {
+      setProofById((prev) => ({ ...prev, [id]: proof }));
+      // Generate a memory linking the task and proof
+      try {
+        const goal = goals.find(g => g.id === id);
+        if (goal) {
+           await addMemory({
+             caption: `DIRECTIVE_COMPLETE // ${goal.title}`,
+             media: [{ type: proof.kind, url: proof.url }],
+             taggedTaskId: id,
+             taggedTaskTitle: goal.title,
+             ...(activeMission ? { taggedMissionId: activeMission.id } : {})
+           });
+        }
+      } catch(e) {
+        console.error("Failed to sync proof to Oracle", e);
+      }
+    }
     completeGoal(id);
   };
 
@@ -183,7 +202,25 @@ export default function GoalVault() {
           <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Mission Directives</p>
         </header>
 
-        <div className="flex flex-col gap-10">
+        {activeMission && (
+          <div className="flex flex-col gap-2 relative z-0">
+             <div className="rounded-xl border border-green-200 bg-green-50 px-6 py-4 flex items-center justify-between shadow-sm relative overflow-hidden group">
+                <div className="absolute inset-0 bg-[url('https://picsum.photos/seed/cyber/100/100')] opacity-5 mix-blend-overlay" />
+                <div className="flex items-center gap-4 relative z-10">
+                   <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                   <div className="flex flex-col">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-green-700">ONGOING MISSION</span>
+                      <span className="text-sm font-black uppercase text-green-900 tracking-tight">{activeMission.title}</span>
+                   </div>
+                </div>
+                <div className="relative z-10 hidden sm:block">
+                  <span className="text-[10px] font-bold font-mono text-green-600 bg-green-100 px-3 py-1 rounded-full uppercase tracking-widest border border-green-200">{activeMission.duration}</span>
+                </div>
+             </div>
+          </div>
+        )}
+
+        <div className="flex flex-col gap-10 -mt-2">
           <section className="flex flex-col gap-6">
             <div className="flex items-center justify-between gap-4 text-zinc-400">
               <div className="flex items-center justify-between w-full">

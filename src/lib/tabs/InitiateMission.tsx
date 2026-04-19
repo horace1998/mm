@@ -15,6 +15,7 @@ export default function InitiateMission() {
   const [durationValue, setDurationValue] = useState("1");
   const [durationUnit, setDurationUnit] = useState("weeks");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showDismissConfirm, setShowDismissConfirm] = useState(false);
 
   const activeMission = missions.find(m => m.status === 'ACTIVE');
   
@@ -55,21 +56,42 @@ export default function InitiateMission() {
                      <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
                      <span className="text-xs font-bold tracking-widest uppercase">ACTIVE TRANSMISSION</span>
                   </div>
-                  <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight uppercase">
-                    BEFORE I MEET <span className="text-green-400">{idolName}</span>, I WILL <span className="bg-green-400/20 text-green-400 px-4 py-1 rounded-2xl md:rounded-[2rem] leading-normal">{activeMission.title}</span> FOR <span className="bg-zinc-800 text-white px-4 py-1 border border-zinc-700/50 rounded-2xl md:rounded-[2rem] leading-normal shadow-inner">{activeMission.duration}</span>.
+                  <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight leading-loose sm:leading-tight uppercase text-left">
+                    <span className="block sm:inline">BEFORE I MEET <span className="text-green-400">{idolName}</span>, I WILL</span> <span className="bg-green-400/20 text-green-400 px-3 py-1 rounded-2xl md:rounded-[2rem] leading-normal">{activeMission.title}</span> <span className="block sm:inline mt-2 sm:mt-0">FOR <span className="bg-zinc-800 text-white px-3 py-1 border border-zinc-700/50 rounded-2xl md:rounded-[2rem] leading-normal shadow-inner">{activeMission.duration}</span>.</span>
                   </h2>
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mt-8">
                     <div className="flex flex-col gap-2">
                        <span className="text-[10px] opacity-40 font-bold uppercase tracking-widest">TIME REMAINING FOR NEXT POW</span>
                        <CountdownTimer deadline={activeMission.nextDeadline} />
                     </div>
-                    <button 
-                      onClick={() => { if(window.confirm('Are you sure you want to dismiss this challenge?')) deleteMission(activeMission.id); }}
-                      className="flex items-center gap-2 px-6 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl transition-colors font-bold uppercase text-xs tracking-widest self-start md:self-end border border-red-500/20"
-                    >
-                      <XCircle className="w-4 h-4" />
-                      DISMISS CHALLENGE
-                    </button>
+                    {showDismissConfirm ? (
+                      <div className="flex items-center gap-2 self-start md:self-end bg-red-500/10 p-2 rounded-xl border border-red-500/20">
+                        <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest px-2">SURE?</span>
+                        <button 
+                          onClick={() => {
+                            deleteMission(activeMission.id);
+                            setShowDismissConfirm(false);
+                          }}
+                          className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors font-bold uppercase text-[10px] tracking-widest"
+                        >
+                          YES
+                        </button>
+                        <button 
+                          onClick={() => setShowDismissConfirm(false)}
+                          className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-colors font-bold uppercase text-[10px] tracking-widest"
+                        >
+                          NO
+                        </button>
+                      </div>
+                    ) : (
+                      <button 
+                        onClick={() => setShowDismissConfirm(true)}
+                        className="flex items-center gap-2 px-6 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl transition-colors font-bold uppercase text-xs tracking-widest self-start md:self-end border border-red-500/20"
+                      >
+                        <XCircle className="w-4 h-4" />
+                        DISMISS CHALLENGE
+                      </button>
+                    )}
                   </div>
                </div>
             </div>
@@ -89,13 +111,13 @@ export default function InitiateMission() {
           </section>
         ) : (
           <section className="flex flex-col gap-10">
-            <div className="rounded-3xl border border-zinc-100 bg-white p-8 md:p-12 shadow-sm">
-              <div className="flex flex-col gap-8 text-2xl md:text-3xl font-bold text-zinc-800 leading-relaxed uppercase tracking-tight">
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-6">
-                  <span className="opacity-40">BEFORE I MEET</span>
-                  <span className="px-4 py-2 bg-zinc-100 text-zinc-900 rounded-xl">{idolName.toUpperCase()}</span>
-                  <span className="opacity-40">, I WILL</span>
-                  <div className="flex-1 min-w-[250px] relative">
+            <div className="rounded-3xl border border-zinc-100 bg-white p-6 sm:p-8 md:p-12 shadow-sm">
+              <div className="flex flex-col gap-6 sm:gap-8 text-xl sm:text-2xl md:text-3xl font-bold text-zinc-800 leading-relaxed uppercase tracking-tight text-left">
+                <div className="flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-4 sm:gap-y-6">
+                  <span className="opacity-40 whitespace-nowrap">BEFORE I MEET</span>
+                  <span className="px-4 py-2 bg-zinc-100 text-zinc-900 rounded-xl whitespace-nowrap">{idolName.toUpperCase()}</span>
+                  <span className="opacity-40 whitespace-nowrap">, I WILL</span>
+                  <div className="w-full sm:flex-1 sm:min-w-[250px] relative">
                     <input 
                       type="text" 
                       value={missionText}
@@ -104,8 +126,8 @@ export default function InitiateMission() {
                       className="w-full bg-transparent border-b-4 border-zinc-200 pb-2 outline-none placeholder:text-zinc-300 focus:border-zinc-800 transition-colors"
                     />
                   </div>
-                  <span className="opacity-40">FOR</span>
-                  <div className="flex gap-2 items-center">
+                  <span className="opacity-40 whitespace-nowrap">FOR</span>
+                  <div className="flex flex-wrap sm:flex-nowrap gap-2 items-center w-full sm:w-auto">
                     <input 
                       type="number" 
                       min="1"
@@ -117,13 +139,13 @@ export default function InitiateMission() {
                     <select 
                       value={durationUnit}
                       onChange={(e) => setDurationUnit(e.target.value)}
-                      className="bg-zinc-100 text-zinc-900 px-6 py-3 rounded-xl border-none outline-none cursor-pointer hover:bg-zinc-200 transition-colors uppercase font-bold"
+                      className="bg-zinc-100 text-zinc-900 px-4 sm:px-6 py-3 rounded-xl border-none outline-none cursor-pointer hover:bg-zinc-200 transition-colors uppercase font-bold text-sm sm:text-base flex-1 sm:flex-none"
                     >
                       <option value="weeks">WEEKS</option>
                       <option value="months">MONTHS</option>
                     </select>
                   </div>
-                  <span className="opacity-40">.</span>
+                  <span className="opacity-40 hidden sm:inline">.</span>
                 </div>
               </div>
 
@@ -235,7 +257,7 @@ function CountdownTimer({ deadline }: { deadline: any }) {
         ] : 'none'
       }}
       transition={{ duration: 0.5, repeat: Infinity }}
-      className="text-7xl md:text-9xl font-black italic tracking-tighter font-mono"
+      className="text-4xl sm:text-6xl md:text-8xl font-black italic tracking-tighter font-mono"
     >
       {timeLeft}
     </motion.div>

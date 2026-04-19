@@ -98,21 +98,6 @@ export default function RitualDashboard() {
     }
   };
 
-  const activeGoals = React.useMemo(() => {
-    const priorityMap: Record<string, number> = { high: 0, medium: 1, low: 2 };
-    return [...goals]
-      .filter(g => !g.completed)
-      .sort((a, b) => {
-        const pA = priorityMap[priorityById[a.id] || "medium"];
-        const pB = priorityMap[priorityById[b.id] || "medium"];
-        if (pA !== pB) return pA - pB;
-        const timeA = a.createdAt?.seconds || 0;
-        const timeB = b.createdAt?.seconds || 0;
-        return timeB - timeA;
-      })
-      .slice(0, 5);
-  }, [goals, priorityById]);
-
   return (
     <div className="w-full h-full flex flex-col p-6 lg:p-10 pb-32 overflow-y-auto custom-scrollbar overflow-x-hidden bg-white text-zinc-900">
       <div className="max-w-6xl mx-auto w-full flex flex-col gap-10">
@@ -301,36 +286,6 @@ export default function RitualDashboard() {
           )}
         </AnimatePresence>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-12">
-          {/* Minimalist Cards */}
-          <div className="minimal-card p-6 flex flex-col gap-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400 border-b border-zinc-100 pb-2">{t.common.agenda}</h4>
-            <div className="flex flex-col gap-2">
-              {activeGoals.map(g => (
-                <CompactDirectiveRow 
-                  key={g.id} 
-                  goal={g} 
-                  onComplete={() => setProofTargetId(g.id)}
-                  scheduledDate={dateById[g.id] || ""}
-                  scheduledTime={scheduleById[g.id] || "09:00:00"}
-                  t={t}
-                />
-              ))}
-              {activeGoals.length === 0 && <span className="text-xs text-zinc-300 italic">{t.vault.noDirectives}</span>}
-            </div>
-          </div>
-
-          <div className="minimal-card p-6 flex flex-col gap-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400 border-b border-zinc-100 pb-2">Analytics</h4>
-            <div className="flex items-end gap-1.5 h-20">
-              {[0.4, 0.7, 0.5, 0.8, 0.3, 0.6, 0.9, 0.5, 0.8, 0.4].map((h, i) => (
-                <div key={i} className="flex-1 bg-zinc-100 rounded-sm hover:bg-zinc-200 transition-colors" style={{ height: `${h * 100}%` }} />
-              ))}
-            </div>
-            <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-auto">Sync Status: Optimal</p>
-          </div>
-        </div>
-
         {/* Spatial Designer Modal */}
         <AnimatePresence>
           {showDesigner && (
@@ -493,103 +448,4 @@ export default function RitualDashboard() {
     </div>
   );
 }
-
-function CompactDirectiveRow({ 
-  goal, 
-  onComplete, 
-  scheduledDate, 
-  scheduledTime,
-  t
-}: { 
-  goal: Goal, 
-  onComplete: () => void,
-  scheduledDate: string,
-  scheduledTime: string,
-  t: any,
-  key?: string
-}) {
-  const swipeX = useMotionValue(0);
-  const swipeBg = useTransform(swipeX, [0, 80], ["rgba(0,0,0,0)", "rgba(34, 197, 94, 0.1)"]);
-  const successOpacity = useTransform(swipeX, [20, 80], [0, 1]);
-  const iconScale = useTransform(swipeX, [0, 60], [0.5, 1.2]);
-  const iconRotate = useTransform(swipeX, [0, 80], [-45, 0]);
-  const hintOpacity = useMotionValue(0);
-
-  const handleDragEnd = (_: any, info: any) => {
-    if (info.offset.x > 80 && !goal.completed) {
-      onComplete();
-    }
-    swipeX.set(0);
-  };
-
-  const goalTypeMeta = {
-    pulse: { label: "ONE-TIME", color: "text-zinc-400 bg-white" },
-    orbit: { label: "WEEKLY", color: "text-zinc-600 bg-white" },
-    galaxy: { label: "MONTHLY", color: "text-black bg-white" }
-  };
-
-  return (
-    <div className="relative overflow-hidden rounded-xl border border-zinc-50 shadow-sm">
-      <motion.div
-        drag={goal.completed ? false : "x"}
-        dragConstraints={{ left: 0, right: 120 }}
-        dragElastic={0.1}
-        onDragEnd={handleDragEnd}
-        style={{ x: swipeX, backgroundColor: swipeBg }}
-        className={cn(
-          "bg-white px-3 py-2 flex items-center gap-3 relative z-10 cursor-grab active:cursor-grabbing transition-opacity",
-          goal.completed && "opacity-40"
-        )}
-      >
-        <div className="w-1.5 h-1.5 rounded-full bg-zinc-100 shrink-0" />
-
-        <div className={cn(
-          "px-1 py-0.5 rounded text-[7px] font-black uppercase tracking-widest shrink-0 border border-zinc-50",
-          goalTypeMeta[goal.type as GoalType]?.color
-        )}>
-          {goalTypeMeta[goal.type as GoalType]?.label || goal.type}
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <p className={cn("text-[11px] font-bold text-zinc-800 truncate leading-tight", goal.completed && "line-through")}>
-            {goal.title}
-          </p>
-          <div className="flex items-center gap-2 mt-0.5">
-            {scheduledDate && (
-              <span className="text-[7px] font-bold text-zinc-400 uppercase tracking-tighter">
-                {new Date(scheduledDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-              </span>
-            )}
-            {scheduledTime && (
-              <span className="text-[7px] font-bold text-zinc-400 uppercase tracking-tighter">
-                {scheduledTime.slice(0, 5)}
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Swipe Hint */}
-        {!goal.completed && (
-          <motion.div style={{ opacity: hintOpacity }} className="flex items-center gap-1 opacity-40 pointer-events-none transition-opacity">
-            <div className="w-1 h-1 rounded-full bg-zinc-200 animate-pulse" />
-            <ChevronLeft className="w-2.5 h-2.5 text-zinc-300" />
-          </motion.div>
-        )}
-      </motion.div>
-
-      {/* Swipe Success Background */}
-      <motion.div 
-        style={{ opacity: successOpacity }}
-        className="absolute inset-y-0 left-0 w-full bg-green-50/50 flex items-center justify-start px-4 pointer-events-none"
-      >
-        <motion.div style={{ scale: iconScale, rotate: iconRotate }}>
-          <Check className="w-4 h-4 text-green-600" />
-        </motion.div>
-        <span className="text-[8px] font-black text-green-600 uppercase tracking-[0.3em] ml-2">{t.common.done} &gt;&gt;</span>
-      </motion.div>
-    </div>
-  );
-}
-
-// Removed locally defined useLocalStorageState to use shared version from ../hooks
 

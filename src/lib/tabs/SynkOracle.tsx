@@ -480,7 +480,7 @@ export default function SynkOracle() {
 
   // Stats for the header
   const totalMemories = memories.length;
-  const totalTagged = memories.filter(m => m.taggedTaskId).length;
+  const totalTagged = memories.filter(m => m.taggedTaskId || m.taggedMissionId).length;
 
   return (
     <div className="w-full h-full flex flex-col p-6 lg:p-10 pb-32 overflow-y-auto custom-scrollbar overflow-x-hidden bg-white text-zinc-900">

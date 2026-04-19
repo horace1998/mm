@@ -431,6 +431,16 @@ export function SYNKProvider({ children }: { children: ReactNode }) {
         ...scrubbedData,
         createdAt: serverTimestamp()
       });
+      
+      // Implicitly update the mission's lastSync state if tagged
+      if (scrubbedData.taggedMissionId) {
+        try {
+          await tagMission(scrubbedData.taggedMissionId as string);
+        } catch (missionErr) {
+          console.error("Failed to tag mission:", missionErr);
+        }
+      }
+
       triggerAchievement("記憶同步完成", "共鳴影像已上傳至 Oracle 頻道");
     } catch (e) {
       handleFirestoreError(e, OperationType.CREATE, `users/${user.uid}/memories`);

@@ -30,8 +30,41 @@ export function ProofModal({ onClose, onSubmit }: { onClose: () => void; onSubmi
         <label className="block border-2 border-dashed border-zinc-100 rounded-3xl p-10 text-center cursor-pointer hover:bg-zinc-50 transition-all">
           <input type="file" accept="image/*,video/*" className="hidden" onChange={(e) => {
               const file = e.target.files?.[0]; if (!file) return;
-              const url = URL.createObjectURL(file); setPreview(url); setFileName(file.name);
-              setKind(file.type.startsWith("video") ? "video" : "image");
+              const isVideo = file.type.startsWith("video");
+              setKind(isVideo ? "video" : "image");
+              setFileName(file.name);
+              const reader = new FileReader();
+              reader.onload = (event) => {
+                if (event.target?.result) {
+                  const url = event.target.result as string;
+                  if (isVideo) {
+                    setPreview(url);
+                  } else {
+                     const img = new Image();
+                     img.src = url;
+                     img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        const maxWidth = 720;
+                        const maxHeight = 720;
+                        if (width > height && width > maxWidth) {
+                          height *= maxWidth / width;
+                          width = maxWidth;
+                        } else if (height > maxHeight) {
+                          width *= maxHeight / height;
+                          height = maxHeight;
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx?.drawImage(img, 0, 0, width, height);
+                        setPreview(canvas.toDataURL('image/jpeg', 0.8));
+                     }
+                  }
+                }
+              };
+              reader.readAsDataURL(file);
             }} 
           />
           <div className="flex flex-col items-center gap-3">
