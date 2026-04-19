@@ -1,0 +1,10 @@
+{
+  "name": "SYNKIFY",
+  "description": "An aesthetic ecosystem for digital expression, fandom connectivity, and creative manifestation.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ],
+  "majorCapabilities": []
+}

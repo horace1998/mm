@@ -1,0 +1,187 @@
+[
+  {
+    "groupId": "aespa",
+    "meta": { "displayName": "aespa", "fandomName": "MY" },
+    "terminology": { "homeHeader": "Member Hub", "taskLabel": "Journal", "galleryLabel": "Evidence", "idLabel": "MY ID", "actionButton": "Create" },
+    "theme": { "primaryColor": "#AEFF00", "variant": "cyber_operative" },
+    "members": [
+      { "id": "karina", "name": "Karina", "role": "Leader" },
+      { "id": "giselle", "name": "Giselle", "role": "Rapper" },
+      { "id": "winter", "name": "Winter", "role": "Vocalist" },
+      { "id": "ningning", "name": "Ningning", "role": "Main Vocalist" }
+    ],
+    "assets": {
+      "passportProfile": "https://picsum.photos/seed/aespakarina/600/800",
+      "passportTexture": "https://picsum.photos/seed/cyber/800/800?blur=10"
+    }
+  },
+  {
+    "groupId": "newjeans",
+    "meta": { "displayName": "NewJeans", "fandomName": "Bunnies" },
+    "terminology": { "homeHeader": "Bunnies Lounge", "taskLabel": "Journal", "galleryLabel": "Gallery", "idLabel": "Bunny ID", "actionButton": "Save" },
+    "theme": { "primaryColor": "#60A5FA", "variant": "retro_soft" },
+    "members": [
+      { "id": "minji", "name": "Minji", "role": "Leader" },
+      { "id": "hanni", "name": "Hanni" },
+      { "id": "danielle", "name": "Danielle" },
+      { "id": "haerin", "name": "Haerin" },
+      { "id": "hyein", "name": "Hyein" }
+    ],
+    "assets": {
+      "passportProfile": "https://picsum.photos/seed/newjeanshanni/600/800",
+      "passportTexture": "https://picsum.photos/seed/retro/800/800?blur=10"
+    }
+  },
+  {
+    "groupId": "ive",
+    "meta": { "displayName": "IVE", "fandomName": "DIVE" },
+    "terminology": { "homeHeader": "DIVE Island", "taskLabel": "Journal", "galleryLabel": "Gallery", "idLabel": "DIVE ID", "actionButton": "Save" },
+    "theme": { "primaryColor": "#FF007F", "variant": "glam" },
+    "members": [
+      { "id": "yujin", "name": "Yujin", "role": "Leader" },
+      { "id": "gaeul", "name": "Gaeul" },
+      { "id": "rei", "name": "Rei" },
+      { "id": "wonyoung", "name": "Wonyoung" },
+      { "id": "liz", "name": "Liz" },
+      { "id": "leeseo", "name": "Leeseo" }
+    ],
+    "assets": { "passportProfile": "https://picsum.photos/seed/ivewonyoung/600/800", "passportTexture": "https://picsum.photos/seed/glam/800/800" }
+  },
+  {
+    "groupId": "lesserafim",
+    "meta": { "displayName": "LE SSERAFIM", "fandomName": "FEARNOT" },
+    "terminology": { "homeHeader": "Fearless Hub", "taskLabel": "Journal", "galleryLabel": "Archive", "idLabel": "FEARNOT ID", "actionButton": "Save" },
+    "theme": { "primaryColor": "#000000", "variant": "brutalist" },
+    "members": [
+      { "id": "chaewon", "name": "Chaewon", "role": "Leader" },
+      { "id": "sakura", "name": "Sakura" },
+      { "id": "yunjin", "name": "Yunjin" },
+      { "id": "kazuha", "name": "Kazuha" },
+      { "id": "eunchae", "name": "Eunchae" }
+    ],
+    "assets": { "passportProfile": "https://picsum.photos/seed/lesserafimchaewon/600/800", "passportTexture": "https://picsum.photos/seed/iron/800/800" }
+  },
+  {
+    "groupId": "babymonster",
+    "meta": { "displayName": "BABYMONSTER", "fandomName": "MONSTIEZ" },
+    "terminology": { "homeHeader": "Monster Hub", "taskLabel": "Journal", "galleryLabel": "Gallery", "idLabel": "MONSTIEZ ID", "actionButton": "Save" },
+    "theme": { "primaryColor": "#FF0000", "variant": "wild" },
+    "members": [
+      { "id": "ruka", "name": "Ruka" }, { "id": "pharita", "name": "Pharita" }, { "id": "asa", "name": "Asa" },
+      { "id": "ahyeon", "name": "Ahyeon" }, { "id": "rami", "name": "Rami" }, { "id": "rora", "name": "Rora" }, { "id": "chiquita", "name": "Chiquita" }
+    ],
+    "assets": { "passportProfile": "https://picsum.photos/seed/babymonsterahyeon/600/800", "passportTexture": "https://picsum.photos/seed/claw/800/800" }
+  },
+  {
+    "groupId": "straykids",
+    "meta": { "displayName": "Stray Kids", "fandomName": "STAY" },
+    "terminology": { "homeHeader": "STAY Hub", "taskLabel": "Journal", "galleryLabel": "Gallery", "idLabel": "STAY ID", "actionButton": "Save" },
+    "theme": { "primaryColor": "#EF4444", "variant": "industrial" },
+    "members": [
+      { "id": "bangchan", "name": "Bang Chan", "role": "Leader" }, { "id": "leeknow", "name": "Lee Know" }, { "id": "changbin", "name": "Changbin" },
+      { "id": "hyunjin", "name": "Hyunjin" }, { "id": "han", "name": "Han" }, { "id": "felix", "name": "Felix" }, { "id": "seungmin", "name": "Seungmin" }, { "id": "ie", "name": "I.N" }
+    ],
+    "assets": { "passportProfile": "https://picsum.photos/seed/straykidsfelix/600/800", "passportTexture": "https://picsum.photos/seed/city/800/800" }
+  },
+  {
+    "groupId": "bts",
+    "meta": { "displayName": "BTS", "fandomName": "ARMY" },
+    "terminology": { "homeHeader": "ARMY Hub", "taskLabel": "Journal", "galleryLabel": "Gallery", "idLabel": "ARMY ID", "actionButton": "Save" },
+    "theme": { "primaryColor": "#8B5CF6", "variant": "purple_cosmos" },
+    "members": [
+      { "id": "rm", "name": "RM", "role": "Leader" }, { "id": "jin", "name": "Jin" }, { "id": "suga", "name": "Suga" },
+      { "id": "jhope", "name": "j-hope" }, { "id": "jimin", "name": "Jimin" }, { "id": "v", "name": "V" }, { "id": "jungkook", "name": "Jungkook" }
+    ],
+    "assets": { "passportProfile": "https://picsum.photos/seed/btsjungkook/600/800", "passportTexture": "https://picsum.photos/seed/galaxy/800/800" }
+  },
+  {
+    "groupId": "nct127",
+    "meta": { "displayName": "NCT 127", "fandomName": "NCTzen" },
+    "terminology": { "homeHeader": "Neo Hub", "taskLabel": "Journal", "galleryLabel": "Gallery", "idLabel": "NCT ID", "actionButton": "Save" },
+    "theme": { "primaryColor": "#84CC16", "variant": "neo_neon" },
+    "members": [
+      { "id": "johnny", "name": "Johnny" },
+      { "id": "yuta", "name": "Yuta" }, { "id": "doyoung", "name": "Doyoung" }, { "id": "jaehyun", "name": "Jaehyun" },
+      { "id": "jungwoo", "name": "Jungwoo" }, { "id": "mark", "name": "Mark" }, { "id": "haechan", "name": "Haechan" }
+    ],
+    "assets": { "passportProfile": "https://picsum.photos/seed/nct127mark/600/800", "passportTexture": "https://picsum.photos/seed/neocity/800/800" }
+  },
+  {
+    "groupId": "seventeen",
+    "meta": { "displayName": "SEVENTEEN", "fandomName": "CARAT" },
+    "terminology": { "homeHeader": "Carat Hub", "taskLabel": "Journal", "galleryLabel": "Gallery", "idLabel": "CARAT ID", "actionButton": "Save" },
+    "theme": { "primaryColor": "#F472B6", "variant": "quartz_serenity" },
+    "members": [
+      { "id": "scoups", "name": "S.Coups", "role": "Leader" }, { "id": "jeonghan", "name": "Jeonghan" }, { "id": "joshua", "name": "Joshua" },
+      { "id": "jun", "name": "Jun" }, { "id": "hoshi", "name": "Hoshi" }, { "id": "wonwoo", "name": "Wonwoo" }, { "id": "woozi", "name": "Woozi" },
+      { "id": "dk", "name": "DK" }, { "id": "mingyu", "name": "Mingyu" }, { "id": "the8", "name": "The8" }, { "id": "seungkwan", "name": "Seungkwan" },
+      { "id": "vernon", "name": "Vernon" }, { "id": "dino", "name": "Dino" }
+    ],
+    "assets": { "passportProfile": "https://picsum.photos/seed/seventeenhoshi/600/800", "passportTexture": "https://picsum.photos/seed/diamond/800/800" }
+  },
+  {
+    "groupId": "twice",
+    "meta": { "displayName": "TWICE", "fandomName": "ONCE" },
+    "terminology": { "homeHeader": "ONCE Hub", "taskLabel": "Journal", "galleryLabel": "Gallery", "idLabel": "ONCE ID", "actionButton": "Save" },
+    "theme": { "primaryColor": "#FCD34D", "variant": "candy" },
+    "members": [
+      { "id": "jihyo", "name": "Jihyo", "role": "Leader" }, { "id": "nayeon", "name": "Nayeon" }, { "id": "jeongyeon", "name": "Jeongyeon" },
+      { "id": "momo", "name": "Momo" }, { "id": "sana", "name": "Sana" }, { "id": "mina", "name": "Mina" }, { "id": "dahyun", "name": "Dahyun" },
+      { "id": "chaeyoung", "name": "Chaeyoung" }, { "id": "tzuyu", "name": "Tzuyu" }
+    ],
+    "assets": { "passportProfile": "https://picsum.photos/seed/twicesana/600/800", "passportTexture": "https://picsum.photos/seed/candy/800/800" }
+  },
+  {
+    "groupId": "blackpink",
+    "meta": { "displayName": "BLACKPINK", "fandomName": "BLINK" },
+    "terminology": { "homeHeader": "BLINK Area", "taskLabel": "Journal", "galleryLabel": "Gallery", "idLabel": "BLINK ID", "actionButton": "Save" },
+    "theme": { "primaryColor": "#000000", "variant": "pink_poison" },
+    "members": [
+      { "id": "jisoo", "name": "Jisoo" }, { "id": "jennie", "name": "Jennie" }, { "id": "rose", "name": "Rosé" }, { "id": "lisa", "name": "Lisa" }
+    ],
+    "assets": { "passportProfile": "https://picsum.photos/seed/blackpinklisa/600/800", "passportTexture": "https://picsum.photos/seed/venom/800/800" }
+  },
+  {
+    "groupId": "riize",
+    "meta": { "displayName": "RIIZE", "fandomName": "BRIIZE" },
+    "terminology": { "homeHeader": "RIIZE Hub", "taskLabel": "Journal", "galleryLabel": "Archive", "idLabel": "BRIIZE ID", "actionButton": "Save" },
+    "theme": { "primaryColor": "#F97316", "variant": "sunrise" },
+    "members": [
+      { "id": "shotaro", "name": "Shotaro" }, { "id": "eunseok", "name": "Eunseok" }, { "id": "sungchan", "name": "Sungchan" },
+      { "id": "wonbin", "name": "Wonbin" }, { "id": "sohee", "name": "Sohee" }, { "id": "anton", "name": "Anton" }
+    ],
+    "assets": { "passportProfile": "https://picsum.photos/seed/riizewonbin/600/800", "passportTexture": "https://picsum.photos/seed/rise/800/800" }
+  },
+  {
+    "groupId": "illit",
+    "meta": { "displayName": "ILLIT", "fandomName": "GLLIT" },
+    "terminology": { "homeHeader": "GLLIT Hub", "taskLabel": "Journal", "galleryLabel": "Gallery", "idLabel": "GLLIT ID", "actionButton": "Save" },
+    "theme": { "primaryColor": "#C084FC", "variant": "dreamy" },
+    "members": [
+      { "id": "yunah", "name": "Yunah" }, { "id": "minju", "name": "Minju" }, { "id": "moka", "name": "Moka" }, { "id": "wonhee", "name": "Wonhee" }, { "id": "iroha", "name": "Iroha" }
+    ],
+    "assets": { "passportProfile": "https://picsum.photos/seed/illitwonhee/600/800", "passportTexture": "https://picsum.photos/seed/dream/800/800" }
+  },
+  {
+    "groupId": "itzy",
+    "meta": { "displayName": "ITZY", "fandomName": "MIDZY" },
+    "terminology": { "homeHeader": "MIDZY Hub", "taskLabel": "Journal", "galleryLabel": "Gallery", "idLabel": "MIDZY ID", "actionButton": "Slay" },
+    "theme": { "primaryColor": "#EC4899", "variant": "not_shy" },
+    "members": [
+      { "id": "yeji", "name": "Yeji", "role": "Leader" }, { "id": "lia", "name": "Lia" }, { "id": "ryujin", "name": "Ryujin" },
+      { "id": "chaeryeong", "name": "Chaeryeong" }, { "id": "yuna", "name": "Yuna" }
+    ],
+    "assets": { "passportProfile": "https://picsum.photos/seed/itzyyeji/600/800", "passportTexture": "https://picsum.photos/seed/neon/800/800" }
+  },
+  {
+    "groupId": "redvelvet",
+    "meta": { "displayName": "Red Velvet", "fandomName": "ReVeluv" },
+    "terminology": { "homeHeader": "ReVe Hub", "taskLabel": "Journal", "galleryLabel": "Gallery", "idLabel": "LUV ID", "actionButton": "Save" },
+    "theme": { "primaryColor": "#EF4444", "variant": "velvet" },
+    "members": [
+      { "id": "irene", "name": "Irene", "role": "Leader" }, { "id": "seulgi", "name": "Seulgi" }, { "id": "wendy", "name": "Wendy" },
+      { "id": "joy", "name": "Joy" }, { "id": "yeri", "name": "Yeri" }
+    ],
+    "assets": { "passportProfile": "https://picsum.photos/seed/redvelvetirene/600/800", "passportTexture": "https://picsum.photos/seed/cake/800/800" }
+  }
+]

@@ -1,0 +1,168 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "The root profile document for an authenticated user.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "isAnonymous": { "type": "boolean" },
+        "stats": {
+          "type": "object",
+          "properties": {
+            "level": { "type": "integer" },
+            "experience": { "type": "integer" },
+            "crystals": { "type": "integer" },
+            "completed_goals": { "type": "integer" },
+            "currentStreak": { "type": "integer", "description": "Current consecutive days of activity." },
+            "activeMultiplier": { "type": "number", "description": "XP/Points multiplier based on streak." },
+            "totalPoints": { "type": "integer", "description": "Total resonance points earned." },
+            "streakShieldCount": { "type": "integer", "description": "Number of shields to prevent streak reset." },
+            "lastSessionDate": { "type": "string", "description": "ISO date string of the last focus session." }
+          },
+          "required": ["level", "experience", "crystals", "completed_goals", "currentStreak", "activeMultiplier", "totalPoints", "streakShieldCount"]
+        },
+        "bias": { "type": "string" },
+        "syncProfile": {
+          "type": "object",
+          "properties": {
+            "linkedGroupId": { "type": "string" },
+            "linkedMemberId": { "type": "string" }
+          }
+        },
+        "customName": { "type": "string" },
+        "customPhoto": { "type": "string" },
+        "username": { "type": "string" },
+        "customBackground": { "type": "string" },
+        "roomAtmosphere": { "type": "string" },
+        "directive": { "type": "string" },
+        "frequency": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "createdAt", "updatedAt"]
+    },
+    "Goal": {
+      "title": "Goal Directive",
+      "description": "A specific mission or goal for the user.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "title": { "type": "string" },
+        "type": {
+          "type": "string",
+          "enum": ["pulse", "orbit", "galaxy"]
+        },
+        "completed": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "title", "type", "completed"]
+    },
+    "Memory": {
+      "title": "Oracle Memory",
+      "description": "A captured moment with multiple media items, tagged tasks, and captions.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "authorUsername": { "type": "string" },
+        "authorPhoto": { "type": "string" },
+        "caption": { "type": "string" },
+        "media": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": { "type": "string", "enum": ["image", "video"] },
+              "url": { "type": "string" },
+              "duration": { "type": "number", "description": "Duration for video in seconds" }
+            },
+            "required": ["type", "url"]
+          }
+        },
+        "taggedTaskId": { "type": "string" },
+        "taggedTaskTitle": { "type": "string" },
+        "taggedMissionId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "media", "createdAt"]
+    },
+    "Mission": {
+      "title": "Idol Mission",
+      "description": "Chain mission with a 24-hour verification window.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "duration": { "type": "string" },
+        "status": { "type": "string", "enum": ["ACTIVE", "BROKEN", "COMPLETED"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "lastProofDate": { "type": "string", "format": "date-time" },
+        "nextDeadline": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "duration", "status", "createdAt", "nextDeadline"]
+    },
+    "usernames": {
+      "title": "Username Mapping",
+      "description": "A mapping of unique usernames to user IDs.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "username": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "username"]
+    },
+    "FandomRegistry": {
+      "title": "Fandom Registry",
+      "description": "Configuration and assets for a K-pop group universe.",
+      "type": "object",
+      "properties": {
+        "groupId": { "type": "string" },
+        "meta": {
+          "type": "object",
+          "properties": {
+             "displayName": { "type": "string" },
+             "fandomName": { "type": "string" }
+          }
+        },
+        "terminology": { "type": "object" },
+        "theme": { "type": "object" },
+        "members": { "type": "array" },
+        "assets": { "type": "object" },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["groupId", "meta", "terminology", "theme", "members"]
+    }
+  },
+  "firestore": {
+    "/usernames/{username}": {
+      "schema": "usernames",
+      "description": "Unique username registry."
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Storage for user profile metadata and stats."
+    },
+    "/users/{userId}/goals/{goalId}": {
+      "schema": "Goal",
+      "description": "User-specific goals and directives."
+    },
+    "/users/{userId}/memories/{memoryId}": {
+      "schema": "Memory",
+      "description": "Vertical scroll feed collection of user memories."
+    },
+    "/users/{userId}/missions/{missionId}": {
+      "schema": "Mission",
+      "description": "User specific chain missions."
+    },
+    "/fandom_registry/{groupId}": {
+      "schema": "FandomRegistry",
+      "description": "ReadOnly (Client-side) global fandom configuration registry."
+    }
+  }
+}
