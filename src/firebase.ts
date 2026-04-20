@@ -1,25 +1,46 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInAnonymously, onAuthStateChanged, User, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, collection, query, where, getDocs, getDocFromServer } from "firebase/firestore";
+import { 
+  getFirestore, 
+  doc, 
+  setDoc, 
+  getDoc, 
+  onSnapshot, 
+  updateDoc, 
+  collection, 
+  query, 
+  where, 
+  getDocs, 
+  getDocFromServer,
+  initializeFirestore,
+  onSnapshotsInSync
+} from "firebase/firestore";
 import firebaseConfig from "../firebase-applet-config.json";
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+
+// Use initializeFirestore to force long-polling which is more stable in sandboxed environments
+export const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+}, firebaseConfig.firestoreDatabaseId);
 
 export { signInAnonymously, GoogleAuthProvider, signInWithPopup };
 
 export async function testConnection() {
   try {
-    await getDocFromServer(doc(db, 'test', 'connection'));
+    const connDoc = await getDocFromServer(doc(db, 'test', 'connection'));
+    console.log("Firestore Connection Verified: ", connDoc.exists());
   } catch (error) {
+    console.warn("Firestore Connectivity Check Fail: ", error);
     if(error instanceof Error && error.message.includes('the client is offline')) {
-      console.error("Please check your Firebase configuration. ");
+      console.error("Please check your Firebase configuration or environment networking.");
     }
   }
 }
 
-// testConnection();
+// Proactively check connection on boot
+testConnection();
 
 export enum OperationType {
   CREATE = 'create',

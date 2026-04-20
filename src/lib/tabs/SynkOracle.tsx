@@ -714,20 +714,19 @@ export default function SynkOracle() {
                                     </div>
                                  )}
                               </div>
-                              <div className="text-[8px] font-bold text-white/20 text-right uppercase tracking-tighter">
-                                 SYNK // OPTIC<br/>
-                                 V-RES: 720P<br/>
-                                 {new Date().toISOString().slice(0, 10)}
+                              <div className="text-[10px] font-black text-white/40 text-right uppercase tracking-[0.2em]">
+                                 SYS // OPTIC
                               </div>
                            </div>
                            
-                           <div className="flex justify-between items-end">
-                              <div className="text-[8px] font-bold text-white/20 uppercase tracking-widest">
-                                 LINK_ESTABLISHED
+                           <div className="flex justify-between items-end border-t border-white/5 pt-4">
+                              <div className="flex items-center gap-2">
+                                 <div className="w-1.5 h-1.5 bg-green-500 rounded-full" />
+                                 <span className="text-[8px] font-black text-white/30 uppercase tracking-[0.4em]">LINK STABLE</span>
                               </div>
-                              <div className="flex gap-1">
-                                 {Array.from({length: 10}).map((_, i) => (
-                                    <div key={i} className={cn("w-1 h-3 border border-white/10", i < pendingMedia.length ? "bg-white border-white" : "")} />
+                              <div className="flex gap-1.5">
+                                 {Array.from({length: 8}).map((_, i) => (
+                                    <div key={i} className={cn("w-1 h-2 rounded-full transition-all", i < pendingMedia.length ? "bg-white" : "bg-white/10")} />
                                  ))}
                               </div>
                            </div>
