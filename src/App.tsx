@@ -1,8 +1,8 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
+import React from "react";
+import AppLayout from "./lib/AppLayout";
 
-export default function App() {
-  return <div></div>;
+function App() {
+  return <AppLayout />;
 }
+
+export default App;

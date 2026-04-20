@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useSYNK, Mission } from "../Store";
 import { useFandom } from "../FandomContext";
 import { motion, AnimatePresence } from "motion/react";
-import { Sparkles, ArrowRight, Clock, ShieldAlert, CheckCircle2, Flame, XCircle } from "lucide-react";
+import { Sparkles, ArrowRight, Clock, ShieldAlert, CheckCircle2, Flame, XCircle, Zap } from "lucide-react";
 import { cn } from "../utils";
 import { translations, Language } from "../translations";
 
 export default function InitiateMission() {
-  const { missions, addMission, deleteMission, triggerAchievement, language, bias } = useSYNK();
+  const { missions, memories, addMission, deleteMission, triggerAchievement, language, bias } = useSYNK();
   const { activeConfig } = useFandom();
   const t = translations[language as Language] || translations.en;
 
@@ -18,6 +18,7 @@ export default function InitiateMission() {
   const [showDismissConfirm, setShowDismissConfirm] = useState(false);
 
   const activeMission = missions.find(m => m.status === 'ACTIVE');
+  const missionEvents = memories.filter(m => m.taggedMissionId === activeMission?.id);
   
   const idolName = activeConfig.members.find(m => m.id === bias)?.name || "MY IDOL";
 
@@ -107,6 +108,47 @@ export default function InitiateMission() {
                   <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">MISSION STATUS</span>
                   <p className="text-xl font-bold text-green-500">CONNECTED // SYNCHRONIZED</p>
                </div>
+            </div>
+
+            {/* Synchronization Events */}
+            <div className="flex flex-col gap-4 mt-4">
+              <div className="flex items-center gap-2 text-zinc-400 px-2">
+                 <Zap className="w-3 h-3" />
+                 <span className="text-[10px] font-bold uppercase tracking-widest">SYNCHRONIZATION EVENTS // PoW LOG</span>
+              </div>
+              
+              <div className="flex flex-col gap-3">
+                {missionEvents.length === 0 ? (
+                  <div className="p-10 border border-dashed border-zinc-100 rounded-3xl text-center bg-zinc-50/30">
+                    <p className="text-[10px] font-bold text-zinc-300 uppercase tracking-widest leading-relaxed">No synchronization events recorded for this mission sequence.</p>
+                  </div>
+                ) : (
+                  missionEvents.map((event, idx) => (
+                    <div key={event.id || idx} className="flex items-center justify-between p-4 bg-zinc-50 border border-zinc-100 rounded-2xl group hover:border-zinc-300 transition-colors">
+                       <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-xl bg-zinc-200 overflow-hidden flex-shrink-0 border border-zinc-100">
+                             {event.media?.[0]?.type === 'image' ? (
+                               <img src={event.media[0].url} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                             ) : (
+                               <div className="w-full h-full flex items-center justify-center bg-zinc-900">
+                                 <div className="w-2 h-2 rounded-full bg-white/20 animate-pulse" />
+                               </div>
+                             )}
+                          </div>
+                          <div className="flex flex-col">
+                             <span className="text-[10px] font-black text-zinc-900 uppercase tracking-tighter">EVENT_{idx.toString().padStart(2, '0')} // SYNC_SUCCESS</span>
+                             <span className="text-[9px] text-zinc-400 font-bold uppercase font-mono">
+                               {event.createdAt?.toDate ? event.createdAt.toDate().toLocaleString() : new Date().toLocaleString()}
+                             </span>
+                          </div>
+                       </div>
+                       <div className="px-3 py-1 bg-white border border-zinc-100 rounded-full text-[8px] font-black text-zinc-400 uppercase tracking-widest group-hover:border-zinc-400 transition-colors">
+                          PoW_VERIFIED
+                       </div>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </section>
         ) : (

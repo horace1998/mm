@@ -44,7 +44,22 @@ export default function SynkOracle() {
   const [reviewMedia, setReviewMedia] = useState<MemoryMedia | null>(null);
   const [useFrame, setUseFrame] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
-  
+  const [currLocation, setCurrLocation] = useState<string>("LOCATING...");
+
+  useEffect(() => {
+    if (isCameraActive && "geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        // Round to nearest 500m (~0.005 degrees)
+        const lat = Math.round(pos.coords.latitude * 200) / 200;
+        const lng = Math.round(pos.coords.longitude * 200) / 200;
+        setCurrLocation(`L: ${lat.toFixed(3)} / ${lng.toFixed(3)}`);
+      }, (err) => {
+        console.warn("Geo signal error:", err);
+        setCurrLocation("LOC: SIGNAL_LOST");
+      }, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 });
+    }
+  }, [isCameraActive]);
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -385,14 +400,15 @@ export default function SynkOracle() {
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0);
 
-        // Draw HUD Frame
-        ctx.strokeStyle = '#cyan';
+        // Draw HUD Frame (to match live HUD exactly)
+        ctx.strokeStyle = '#00f2ff'; // Synk Cyan
         ctx.lineWidth = 2;
-        const p = 20; // padding
+        const p = canvas.width * 0.05; // responsive padding
+        const s = Math.min(canvas.width, canvas.height) * 0.15; // corner size
         
-        // Corners
+        ctx.setLineDash([]);
+        // Draw corners
         ctx.beginPath();
-        const s = 40; // corner size
         // Top Left
         ctx.moveTo(p, p + s); ctx.lineTo(p, p); ctx.lineTo(p + s, p);
         // Top Right
@@ -403,22 +419,37 @@ export default function SynkOracle() {
         ctx.moveTo(p + s, canvas.height - p); ctx.lineTo(p, canvas.height - p); ctx.lineTo(p, canvas.height - p - s);
         ctx.stroke();
 
-        // Label
-        ctx.fillStyle = 'white';
-        ctx.font = 'bold 12px monospace';
-        ctx.fillText('SYNK_OS // NEURAL_LINK', p + 10, p + 20);
+        // Main Frame Border (subtle)
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(p, p, canvas.width - (p * 2), canvas.height - (p * 2));
+
+        // Background for labels
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
         
-        // Bottom Metadata
+        // Header Text
+        ctx.font = 'bold 12px monospace';
+        const headText = 'SYNK // OPTIC_NEURAL_LINK';
+        const headW = ctx.measureText(headText).width;
+        ctx.fillRect(p + 10, p + 10, headW + 20, 20);
+        ctx.fillStyle = '#00f2ff';
+        ctx.fillText(headText, p + 20, p + 24);
+        
+        // Metadata (Bottom)
         const dateStr = new Date().toISOString().split('T')[0];
         const timeStr = new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' });
-        const locationStr = "KWUN TONG // DISTRICT_09";
-        const identityStr = bias !== 'None' ? `ID: ${bias.toUpperCase()}_UNIT` : "ID: GUEST_AGENT";
+        const metadata = `${dateStr} ${timeStr} // ${currLocation}`;
+        const metaW = ctx.measureText(metadata).width;
         
-        ctx.font = 'bold 10px monospace';
-        ctx.fillText(`${dateStr} ${timeStr}`, p + 10, canvas.height - p - 10);
-        ctx.fillText(locationStr, canvas.width - p - 150, p + 20);
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        ctx.fillRect(p + 10, canvas.height - p - 30, metaW + 20, 20);
+        ctx.fillStyle = 'white';
+        ctx.fillText(metadata, p + 20, canvas.height - p - 16);
+
+        // Identity (Right)
+        const idText = bias !== 'None' ? `ID: ${bias.toUpperCase()}_UNIT` : "ID: GUEST_AGENT";
         ctx.textAlign = 'right';
-        ctx.fillText(identityStr, canvas.width - p - 10, canvas.height - p - 10);
+        ctx.fillText(idText, canvas.width - p - 20, canvas.height - p - 16);
 
         finalUrl = canvas.toDataURL('image/jpeg', 0.85);
       }
@@ -578,12 +609,27 @@ export default function SynkOracle() {
                                 <div className="w-full h-full relative">
                                    <img src={reviewMedia.url} className="w-full h-full object-cover" />
                                    {useFrame && (
-                                     <div className="absolute inset-0 border-[1px] border-white/30 m-6 pointer-events-none">
-                                        <div className="absolute top-0 left-0 w-8 h-8 border-t-[1px] border-l-[1px] border-white" />
-                                        <div className="absolute top-0 right-0 w-8 h-8 border-t-[1px] border-r-[1px] border-white" />
-                                        <div className="absolute bottom-0 left-0 w-8 h-8 border-b-[1px] border-l-[1px] border-white" />
-                                        <div className="absolute bottom-0 right-0 w-8 h-8 border-b-[1px] border-r-[1px] border-white" />
-                                        <div className="absolute top-2 left-4 text-[8px] font-bold text-white bg-black/40 px-2 rounded-full tracking-widest">SYNK // HUD</div>
+                                     <div className="absolute inset-0 pointer-events-none m-6">
+                                        {/* Frame Corners */}
+                                        <div className="absolute inset-0 border border-white/10" />
+                                        <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#00f2ff]" />
+                                        <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[#00f2ff]" />
+                                        <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-[#00f2ff]" />
+                                        <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[#00f2ff]" />
+                                        
+                                        {/* Labels */}
+                                        <div className="absolute top-4 left-4 flex flex-col gap-1">
+                                           <div className="bg-black/60 px-2 py-0.5 rounded text-[8px] font-bold text-[#00f2ff] tracking-widest uppercase border border-[#00f2ff]/30">SYNK // OPTIC_NEURAL_LINK</div>
+                                        </div>
+                                        
+                                        <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                                           <div className="bg-black/60 px-2 py-1 rounded text-[8px] font-mono text-white/90 border border-white/10">
+                                              {new Date().toISOString().split('T')[0]} {new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' })} // {currLocation}
+                                           </div>
+                                           <div className="text-[8px] font-bold text-white/50 tracking-tighter text-right">
+                                              ID: {bias !== 'None' ? `${bias.toUpperCase()}_UNIT` : "GUEST_AGENT"}
+                                           </div>
+                                        </div>
                                      </div>
                                    )}
                                 </div>
@@ -646,7 +692,7 @@ export default function SynkOracle() {
                           )}
                         </AnimatePresence>
                         
-                        {/* Immersive HUD */}
+                        {/* Live Optimized HUD */}
                         <div className="absolute inset-0 pointer-events-none border-[1px] border-white/10 m-4 flex flex-col justify-between p-4">
                            <div className="flex justify-between items-start">
                               <div className="flex flex-col gap-1">

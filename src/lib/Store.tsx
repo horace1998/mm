@@ -282,19 +282,31 @@ export function SYNKProvider({ children }: { children: ReactNode }) {
     };
   }, [user]);
 
-  // Mission Deadline Checker
+  // Mission Deadline Checker - Optimized to use refs and prevent loop restarts
+  const missionsRef = useRef(missions);
   useEffect(() => {
-    if (!user || missions.length === 0) return;
+    missionsRef.current = missions;
+  }, [missions]);
+
+  useEffect(() => {
+    if (!user) return;
     
     const checkDeadlines = async () => {
+      const currentMissions = missionsRef.current;
       const now = new Date();
-      for (const m of missions) {
+      
+      for (const m of currentMissions) {
         if (m.status === 'ACTIVE' && m.nextDeadline) {
           const deadline = m.nextDeadline.toDate ? m.nextDeadline.toDate() : new Date(m.nextDeadline);
           if (now > deadline) {
              const mRef = doc(db, 'users', user.uid, 'missions', m.id);
-             await updateDoc(mRef, { status: 'BROKEN' });
-             triggerAchievement("MISSION_FAILED", `${m.title.toUpperCase()} // STATUS: BROKEN`);
+             // Use try-catch to handle potential concurrent updates
+             try {
+               await updateDoc(mRef, { status: 'BROKEN' });
+               triggerAchievement("MISSION_FAILED", `${m.title.toUpperCase()} // STATUS: BROKEN`);
+             } catch (err) {
+               console.error("Deadline sync error:", err);
+             }
           }
         }
       }
@@ -304,7 +316,7 @@ export function SYNKProvider({ children }: { children: ReactNode }) {
     checkDeadlines();
     
     return () => clearInterval(interval);
-  }, [user, missions]);
+  }, [user?.uid]);
 
   const addGoal = async (title: string, type: GoalType) => {
     if (!user) return "";
