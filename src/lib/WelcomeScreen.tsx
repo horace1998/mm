@@ -160,10 +160,15 @@ const WelcomeScreen: React.FC<{ onComplete?: () => void }> = ({ onComplete }) =>
     } catch (err: any) {
       console.error("Google Auth error:", err);
       setLoading(false);
+      
+      const isCrossOriginError = err.message?.includes("Cross-origin script load denied") || 
+                                 err.message?.includes("CORS") ||
+                                 (err instanceof TypeError && err.message.includes("script"));
+
       if (err.code === 'auth/popup-closed-by-user') {
         // Silently handle
-      } else if (err.code === 'auth/popup-blocked') {
-        setError("Sign-in popup was blocked by your browser. Please OPEN THE APP IN A NEW TAB using the icon in the top right.");
+      } else if (err.code === 'auth/popup-blocked' || isCrossOriginError) {
+        setError("RESONANCE_BLOCKED: Iframe security restriction detected. Please OPEN THE APP IN A NEW TAB using the icon in the top right to authorize your identity.");
       } else {
         setError(err.message || "Google sign-in failed. Please try again.");
       }
@@ -179,12 +184,14 @@ const WelcomeScreen: React.FC<{ onComplete?: () => void }> = ({ onComplete }) =>
       console.log("Guest Access successful");
     } catch (err: any) {
       console.error("Guest Auth error:", err);
-      setLoading(false);
+      setLoading(true); // Keep loading state so the error box stays relevant
+      const projectId = "gen-lang-client-0600996713";
       if (err.code === 'auth/admin-restricted-operation') {
-        setError("Guest Access is disabled in the Firebase Console. Please enable 'Anonymous' authentication in the Firebase Auth settings.");
+        setError(`GUEST_ACCESS_LOCKED: Anonymous authentication is disabled.\n\nTo enable it:\n1. Visit: https://console.firebase.google.com/project/${projectId}/authentication/providers\n2. Click "Add new provider"\n3. Select "Anonymous" and enable it.\n4. Save changes and return here.`);
       } else {
         setError(err.message || "Guest access failed. Please try again.");
       }
+      setLoading(false);
     }
   };
 
@@ -614,7 +621,7 @@ const WelcomeScreen: React.FC<{ onComplete?: () => void }> = ({ onComplete }) =>
           </div>
           
           <div className="p-5 flex flex-col gap-4">
-            <p className="text-[10px] tracking-[0.1em] text-zinc-600 leading-relaxed font-bold uppercase">
+            <p className="text-[10px] tracking-[0.1em] text-zinc-600 leading-relaxed font-bold uppercase whitespace-pre-line">
               {error.includes("OPENING THE APP IN A NEW TAB") ? (
                 <>
                   RESONANCE INTERRUPTED BY BROWSER SECURITY POLICIES.<br />
@@ -634,11 +641,11 @@ const WelcomeScreen: React.FC<{ onComplete?: () => void }> = ({ onComplete }) =>
                 </li>
                 <li className="text-[9px] tracking-[0.1em] text-zinc-500 flex items-start gap-2">
                   <span className="text-zinc-900 font-black">02</span>
-                  <span>IF SEEING "PROJECT NOT FOUND": YOUR FIREBASE CONSENT SCREEN MAY BE SET TO "INTERNAL". SET TO "EXTERNAL" IN CLOUD CONSOLE.</span>
+                  <span>IF SEEING "CROSS-ORIGIN SCRIPT DENIED": ENSURE YOUR APP'S DOMAIN IS ADDED TO FIREBASE "AUTHORIZED DOMAINS" LIST AT THE CONSOLE.</span>
                 </li>
                 <li className="text-[9px] tracking-[0.1em] text-zinc-500 flex items-start gap-2">
                   <span className="text-zinc-900 font-black">03</span>
-                  <span>ADD YOUR DOMAIN TO FIREBASE "AUTHORIZED DOMAINS" LIST.</span>
+                  <span>SET YOUR FIREBASE OAUTH CONSENT SCREEN TO "EXTERNAL" TYPE IN GOOGLE CLOUD CONSOLE.</span>
                 </li>
               </ul>
             </div>
@@ -668,7 +675,7 @@ const WelcomeScreen: React.FC<{ onComplete?: () => void }> = ({ onComplete }) =>
               </div>
               <div className="flex flex-col gap-2 items-center">
                 <span className="text-[10px] uppercase tracking-[0.6em] text-zinc-900 font-bold">SYNCHRONIZING CORE...</span>
-                <span className="text-[8px] tracking-[0.3em] text-zinc-300 uppercase font-bold">UPLOADING RESISTANCE DATA</span>
+                <span className="text-[8px] tracking-[0.3em] text-zinc-300 uppercase font-bold">UPLOADING RESONANCE DATA</span>
               </div>
             </motion.div>
           )}
