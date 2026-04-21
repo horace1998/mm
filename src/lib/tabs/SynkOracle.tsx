@@ -257,7 +257,11 @@ export default function SynkOracle() {
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
-        ctx?.drawImage(img, 0, 0, width, height);
+        if (ctx) {
+          ctx.filter = 'grayscale(0.2)';
+          ctx.drawImage(img, 0, 0, width, height);
+          ctx.filter = 'none';
+        }
         resolve(canvas.toDataURL('image/jpeg', quality));
       };
     });
@@ -372,7 +376,10 @@ export default function SynkOracle() {
     canvas.height = height;
     const ctx = canvas.getContext('2d');
     if (ctx) {
+      // Set filter to match live preview
+      ctx.filter = 'grayscale(0.2)';
       ctx.drawImage(video, 0, 0, width, height);
+      ctx.filter = 'none'; // reset
       const url = canvas.toDataURL('image/jpeg', 0.85); // High fidelity snapshot
       
       if (url && url.length > 500) {
@@ -692,42 +699,52 @@ export default function SynkOracle() {
                           )}
                         </AnimatePresence>
                         
-                        {/* Live Optimized HUD */}
-                        <div className="absolute inset-0 pointer-events-none border-[1px] border-white/10 m-4 flex flex-col justify-between p-4">
-                           <div className="flex justify-between items-start">
-                              <div className="flex flex-col gap-1">
-                                 <div className="flex items-center gap-2">
-                                    <div className={cn("w-2 h-2 rounded-full", isRecording ? "bg-red-500 animate-pulse" : "bg-white")} />
-                                    <span className="text-[10px] font-bold tracking-widest uppercase text-white/50">
-                                       {isRecording ? "REC" : "STBY"}
-                                    </span>
-                                 </div>
-                                 {isRecording && (
-                                    <span className="text-2xl font-bold text-white pl-4">
-                                       00:{Math.floor(recordingTime).toString().padStart(2, '0')}
-                                    </span>
-                                 )}
-                                 {zoomCapabilities && (
-                                    <div className="mt-2 bg-black/40 backdrop-blur-md px-2 py-1 rounded border border-white/5 flex items-center gap-2">
-                                       <span className="text-[8px] font-bold text-white/40 tracking-tighter">ZOOM</span>
-                                       <span className="text-xs font-bold text-white">{zoom.toFixed(1)}x</span>
+                        {/* Live Optimized HUD - Matching Canvas Frame */}
+                        <div className="absolute inset-0 pointer-events-none m-4 flex flex-col justify-between">
+                           {/* Corners */}
+                           <div className="absolute inset-0 border border-white/5" />
+                           <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-[#00f2ff]" />
+                           <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-[#00f2ff]" />
+                           <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-[#00f2ff]" />
+                           <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-[#00f2ff]" />
+
+                           <div className="relative p-6 flex flex-col justify-between h-full">
+                              <div className="flex justify-between items-start">
+                                 <div className="flex flex-col gap-2">
+                                    <div className="bg-black/60 px-2 py-0.5 rounded text-[8px] font-bold text-[#00f2ff] tracking-widest uppercase border border-[#00f2ff]/30">SYNK // OPTIC_NEURAL_LINK</div>
+                                    <div className="flex items-center gap-1.5">
+                                       <div className={cn("w-1.5 h-1.5 rounded-full", isRecording ? "bg-red-500 animate-pulse shadow-[0_0_8px_#ef4444]" : "bg-white/40")} />
+                                       <span className="text-[9px] font-bold tracking-widest uppercase text-white/50">
+                                          {isRecording ? "REC" : "STBY"}
+                                       </span>
                                     </div>
-                                 )}
+                                    {isRecording && (
+                                       <span className="text-xl font-bold text-white pl-1 font-mono">
+                                          00:{Math.floor(recordingTime).toString().padStart(2, '0')}
+                                       </span>
+                                    )}
+                                 </div>
+                                 <div className="flex flex-col items-end gap-1">
+                                    <div className="text-[9px] font-black text-white/30 uppercase tracking-[0.3em]">RES: 720P</div>
+                                    {zoomCapabilities && (
+                                       <div className="bg-white/5 px-2 py-0.5 rounded text-[8px] font-bold text-white/60">Z: {zoom.toFixed(1)}X</div>
+                                    )}
+                                 </div>
                               </div>
-                              <div className="text-[10px] font-black text-white/40 text-right uppercase tracking-[0.2em]">
-                                 SYS // OPTIC
-                              </div>
-                           </div>
-                           
-                           <div className="flex justify-between items-end border-t border-white/5 pt-4">
-                              <div className="flex items-center gap-2">
-                                 <div className="w-1.5 h-1.5 bg-green-500 rounded-full" />
-                                 <span className="text-[8px] font-black text-white/30 uppercase tracking-[0.4em]">LINK STABLE</span>
-                              </div>
-                              <div className="flex gap-1.5">
-                                 {Array.from({length: 8}).map((_, i) => (
-                                    <div key={i} className={cn("w-1 h-2 rounded-full transition-all", i < pendingMedia.length ? "bg-white" : "bg-white/10")} />
-                                 ))}
+                              
+                              <div className="flex justify-between items-end">
+                                 <div className="flex flex-col gap-1">
+                                    <div className="flex items-center gap-2">
+                                       <div className="w-1.5 h-1.5 bg-green-500 rounded-full" />
+                                       <span className="text-[8px] font-black text-white/30 uppercase tracking-[0.4em]">LINK STABLE</span>
+                                    </div>
+                                    <div className="bg-black/40 px-2 py-1 rounded text-[8px] font-mono text-white/70 border border-white/5">
+                                      {currLocation}
+                                    </div>
+                                 </div>
+                                 <div className="text-[8px] font-bold text-white/30 tracking-widest uppercase italic">
+                                    ID: {bias !== 'None' ? `${bias.toUpperCase()}_UNIT` : "GUEST_AGENT"}
+                                 </div>
                               </div>
                            </div>
                         </div>

@@ -98,7 +98,18 @@ export default function InitiateMission() {
   }, [charIdx, isReversing, suggestionIdx, missionText]);
 
   const activeMission = missions.find(m => m.status === 'ACTIVE');
-  const missionEvents = memories.filter(m => m.taggedMissionId === activeMission?.id);
+  const missionEvents = memories
+    .filter(m => m.taggedMissionId === activeMission?.id)
+    .sort((a, b) => {
+      const getMs = (date: any) => {
+        if (!date) return 0;
+        if (typeof date === 'number') return date;
+        if (date.toMillis) return date.toMillis();
+        if (date.toDate) return date.toDate().getTime();
+        return new Date(date).getTime();
+      };
+      return getMs(a.createdAt) - getMs(b.createdAt);
+    });
   
   const idolName = activeConfig.members.find(m => m.id === bias)?.name || "MY IDOL";
 

@@ -584,6 +584,7 @@ export function SYNKProvider({ children }: { children: ReactNode }) {
       },
       bias, setBias: async (b: MemberBias) => {
         if (b === bias) return;
+        setBias(b);
         await syncProfile({ bias: b });
       },
       customName, setCustomName: async (name: string) => {

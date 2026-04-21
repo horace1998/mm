@@ -49,7 +49,7 @@ interface UserSyncState {
 }
 
 const WelcomeScreen: React.FC<{ onComplete?: () => void }> = ({ onComplete }) => {
-  const { user, loading: authLoading, hasProfile, syncProfileData, setSyncProfileData } = useSYNK();
+  const { user, loading: authLoading, hasProfile, syncProfileData, setSyncProfileData, setBias } = useSYNK();
   const { activeConfig, fandoms, switchFandom } = useFandom();
   const [phase, setPhase] = useState<"intro" | "pact" | "questions" | "auth" | "loading" | "success">("intro");
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -111,6 +111,11 @@ const WelcomeScreen: React.FC<{ onComplete?: () => void }> = ({ onComplete }) =>
 
   const handleAnswerClick = (value: string) => {
     setTempSelection(value);
+    if (currentQuestion === 1) {
+       // If picking bias, update globally for visual feedback
+       setBias(value as MemberBias);
+       setAnswers(prev => ({ ...prev, bias: value as MemberBias }));
+    }
   };
 
   const handleNextStep = (forcedValue?: string) => {

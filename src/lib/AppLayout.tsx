@@ -5,6 +5,7 @@ import { lazy, Suspense, useState } from "react";
 import { Home, Vault, Zap, Fingerprint, Gem, Database, Timer, Sparkles } from "lucide-react";
 import { cn } from "./utils";
 import { translations, Language } from "./translations";
+import WelcomeScreen from "./WelcomeScreen";
 
 // Lazy load tabs
 const RitualDashboard = lazy(() => import("./tabs/RitualDashboard"));
@@ -26,7 +27,7 @@ const TABS = (t: any, fandom: any) => [
 type TabId = "agenda" | "initiate" | "journal" | "proof" | "identity" | "registry";
 
 export default function AppLayout() {
-  const { stats, achievement, language } = useSYNK();
+  const { stats, achievement, language, hasProfile } = useSYNK();
   const { activeConfig } = useFandom();
   const [activeTab, setActiveTab] = useState<TabId>("agenda");
   const [direction, setDirection] = useState(0);
@@ -47,6 +48,12 @@ export default function AppLayout() {
       className="relative w-full h-screen bg-synk-bg text-synk-foreground overflow-hidden flex font-sans"
       style={{ '--primary-color': activeConfig.theme.primaryColor } as any}
     >
+      <AnimatePresence>
+        {!hasProfile && (
+          <WelcomeScreen />
+        )}
+      </AnimatePresence>
+
       <div className="flex w-full h-full max-w-[1440px] mx-auto bg-white border-x border-synk-border overflow-hidden">
         
         {/* Sidebar - Left Navigation */}
